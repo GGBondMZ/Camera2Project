@@ -31,7 +31,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.mlkit.vision.barcode.Barcode;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cameraView = findViewById(R.id.camera_view);
         scanButton = findViewById(R.id.scan_btn);
 
+        cameraView.setOnClickListener(this);
         scanButton.setOnClickListener(this);
 
         BarcodeScannerOptions options =
@@ -86,6 +89,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Barcode.FORMAT_QR_CODE,
                                 Barcode.FORMAT_AZTEC)
                         .build();
+
+        BarcodeScanner scanner = BarcodeScanning.getClient();
+
+//        Task<List<Barcode>> result = scanner.process(image)
+//                .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+//                    @Override
+//                    public void onSuccess(List<Barcode> barcodes) {
+//                        // Task completed successfully
+//                        for (Barcode barcode : barcodes) {
+//                            Rect bounds = barcode.getBoundingBox();
+//                            Point[] corners = barcode.getCornerPoints();
+//
+//                            String rawValue = barcode.getRawValue();
+//
+//                            int valueType = barcode.getValueType();
+//                            // See API reference for complete list of supported types
+//                            switch (valueType) {
+//                                case Barcode.TYPE_WIFI:
+//                                    String ssid = barcode.getWifi().getSsid();
+//                                    String password = barcode.getWifi().getPassword();
+//                                    int type = barcode.getWifi().getEncryptionType();
+//                                    break;
+//                                case Barcode.TYPE_URL:
+//                                    String title = barcode.getUrl().getTitle();
+//                                    String url = barcode.getUrl().getUrl();
+//                                    break;
+//                            }
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        // Task failed with an exception
+//                        // ...
+//                    }
+//                });
 
     }
 
@@ -270,6 +310,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.scan_btn) {
             capture();
+        }
+
+        if (v.getId() == R.id.camera_view) {
+            try {
+                mPreviewSession.setRepeatingRequest(mCaptureRequest, null, null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
